@@ -1,7 +1,3 @@
-using System;
-using System.Collections.Generic;
-using System.Text;
-using System.Windows.Forms;
 using TimeTracker2.Enum;
 
 namespace TimeTracker2.Helpers
@@ -34,6 +30,12 @@ namespace TimeTracker2.Helpers
             fileHelper.AppendContent(FolderEnum.Projects, projectName);
 
             return true;
+        }
+
+        public List<string> GetProjects()
+        {
+            var fileHelper = new FileHelper();
+            return fileHelper.ReadLines(FolderEnum.Projects);
         }
     }
 }

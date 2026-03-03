@@ -16,10 +16,22 @@ namespace TimeTracker2
 
         private void MainMenu_Load(object sender, EventArgs e)
         {
-            listBox1.Items.Add("Task 1: Project Setup");
-            listBox1.Items.Add("Task 2: Database Design");
-            listBox1.Items.Add("Task 3: UI Implementation");
-            listBox1.Items.Add("Task 4: Testing & Debugging");
+            LoadProjects();
+        }
+
+        private void LoadProjects()
+        {
+            listBox1.Items.Clear();
+            var db = new Helpers.DatabaseManager();
+            var projects = db.GetProjects();
+
+            foreach (var project in projects)
+            {
+                if (!string.IsNullOrWhiteSpace(project))
+                {
+                    listBox1.Items.Add(project);
+                }
+            }
 
             if (listBox1.Items.Count > 0)
             {
@@ -70,7 +82,11 @@ namespace TimeTracker2
         {
             var addForm = new Add();
             this.Hide();
-            addForm.FormClosed += (s, args) => this.Show();
+            addForm.FormClosed += (s, args) =>
+            {
+                this.Show();
+                LoadProjects();
+            };
             addForm.Show();
         }
 
