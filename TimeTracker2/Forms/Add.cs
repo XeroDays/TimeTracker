@@ -1,11 +1,3 @@
-﻿using System;
-using System.Collections.Generic;
-using System.ComponentModel;
-using System.Data;
-using System.Drawing;
-using System.Text;
-using System.Windows.Forms;
-
 namespace TimeTracker2.Forms
 {
     public partial class Add : Form
@@ -13,11 +5,17 @@ namespace TimeTracker2.Forms
         public Add()
         {
             InitializeComponent();
-        }
+            
+        } 
 
-        private void label1_Click(object sender, EventArgs e)
+        private void btnAdd_Click(object sender, EventArgs e)
         {
-
+            var db = new Helpers.DatabaseManager();
+            if (db.CreateProject(txtProjectName.Text))
+            {
+                MessageBox.Show("Project added successfully!", "Success", MessageBoxButtons.OK, MessageBoxIcon.Information);
+                this.Close();
+            }
         }
     }
 }

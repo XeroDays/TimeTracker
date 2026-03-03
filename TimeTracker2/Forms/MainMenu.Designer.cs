@@ -30,10 +30,10 @@ namespace TimeTracker2
         {
             listBox1 = new ListBox();
             btnClose = new PictureBox();
-            pictureBox1 = new PictureBox();
+            btnAddProject = new PictureBox();
             label1 = new Label();
             ((System.ComponentModel.ISupportInitialize)btnClose).BeginInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btnAddProject).BeginInit();
             SuspendLayout();
             // 
             // listBox1
@@ -63,15 +63,16 @@ namespace TimeTracker2
             btnClose.TabStop = false;
             btnClose.Click += btnClose_Click;
             // 
-            // pictureBox1
+            // btnAddProject
             // 
-            pictureBox1.Image = Properties.Resources.icons8_add_96;
-            pictureBox1.Location = new Point(283, 418);
-            pictureBox1.Name = "pictureBox1";
-            pictureBox1.Size = new Size(32, 31);
-            pictureBox1.SizeMode = PictureBoxSizeMode.StretchImage;
-            pictureBox1.TabIndex = 2;
-            pictureBox1.TabStop = false;
+            btnAddProject.Image = Properties.Resources.icons8_add_96;
+            btnAddProject.Location = new Point(283, 418);
+            btnAddProject.Name = "btnAddProject";
+            btnAddProject.Size = new Size(32, 31);
+            btnAddProject.SizeMode = PictureBoxSizeMode.StretchImage;
+            btnAddProject.TabIndex = 2;
+            btnAddProject.TabStop = false;
+            btnAddProject.Click += btnAddProject_Click;
             // 
             // label1
             // 
@@ -92,7 +93,7 @@ namespace TimeTracker2
             BackColor = Color.FromArgb(15, 23, 42);
             ClientSize = new Size(670, 456);
             Controls.Add(label1);
-            Controls.Add(pictureBox1);
+            Controls.Add(btnAddProject);
             Controls.Add(btnClose);
             Controls.Add(listBox1);
             FormBorderStyle = FormBorderStyle.None;
@@ -101,7 +102,7 @@ namespace TimeTracker2
             Text = "MainMenu";
             Load += MainMenu_Load;
             ((System.ComponentModel.ISupportInitialize)btnClose).EndInit();
-            ((System.ComponentModel.ISupportInitialize)pictureBox1).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btnAddProject).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -110,7 +111,7 @@ namespace TimeTracker2
 
         private ListBox listBox1;
         private PictureBox btnClose;
-        private PictureBox pictureBox1;
+        private PictureBox btnAddProject;
         private Label label1;
     }
 }

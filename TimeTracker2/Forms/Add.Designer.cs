@@ -57,7 +57,6 @@
             label1.Size = new Size(171, 38);
             label1.TabIndex = 4;
             label1.Text = "Add Project";
-            label1.Click += label1_Click;
             // 
             // btnAdd
             // 
@@ -75,6 +74,7 @@
             btnAdd.TabIndex = 5;
             btnAdd.Text = "Add";
             btnAdd.UseVisualStyleBackColor = false;
+            btnAdd.Click += btnAdd_Click;
             // 
             // Add
             // 
@@ -87,6 +87,7 @@
             Controls.Add(txtProjectName);
             FormBorderStyle = FormBorderStyle.FixedToolWindow;
             Name = "Add";
+            StartPosition = FormStartPosition.CenterScreen;
             Text = "Add";
             ResumeLayout(false);
             PerformLayout();

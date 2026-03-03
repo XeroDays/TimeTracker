@@ -21,5 +21,19 @@ namespace TimeTracker2.Helpers
 
             return true;
         }
+
+        public bool CreateProject(string projectName)
+        {
+            if (string.IsNullOrWhiteSpace(projectName))
+            {
+                MessageBox.Show("Please enter a project name.", "Error", MessageBoxButtons.OK, MessageBoxIcon.Warning);
+                return false;
+            }
+
+            var fileHelper = new FileHelper();
+            fileHelper.AppendContent(FolderEnum.Projects, projectName);
+
+            return true;
+        }
     }
 }
