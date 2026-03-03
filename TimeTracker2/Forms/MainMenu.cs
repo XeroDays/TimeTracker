@@ -29,7 +29,6 @@ namespace TimeTracker2
         {
             if (e.Index < 0) return;
 
-            // Colors matching the Login form theme
             Color backgroundColor = Color.FromArgb(30, 41, 59);
             Color selectedColor = Color.FromArgb(14, 165, 233); // Sky blue
             Color textColor = Color.FromArgb(241, 245, 249);
