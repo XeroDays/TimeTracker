@@ -1,4 +1,5 @@
 using TimeTracker2.Forms;
+using TimeTracker2.Helpers;
 
 namespace TimeTracker2
 {
@@ -22,7 +23,7 @@ namespace TimeTracker2
         private void LoadProjects()
         {
             listBox1.Items.Clear();
-            var db = new Helpers.DatabaseManager();
+            DatabaseManager db = new DatabaseManager();
             var projects = db.GetProjects();
 
             foreach (var project in projects)
@@ -71,9 +72,7 @@ namespace TimeTracker2
             }
 
             // Draw text with some padding
-            TextRenderer.DrawText(g, listBox1.Items[e.Index].ToString(), listBox1.Font,
-                new Rectangle(e.Bounds.X + 10, e.Bounds.Y, e.Bounds.Width - 10, e.Bounds.Height),
-                textColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
+            TextRenderer.DrawText(g, listBox1.Items[e.Index].ToString(), listBox1.Font, new Rectangle(e.Bounds.X + 10, e.Bounds.Y, e.Bounds.Width - 10, e.Bounds.Height), textColor, TextFormatFlags.VerticalCenter | TextFormatFlags.Left);
 
             e.DrawFocusRectangle();
         }
@@ -101,11 +100,49 @@ namespace TimeTracker2
 
         private void StartWorkflow()
         {
-                string selectedProject = listBox1.SelectedItem.ToString();
-                lblProject.Text = selectedProject;
-                
-                var db = new Helpers.DatabaseManager();
-                db.TrackProject(selectedProject);
+            string selectedProject = listBox1.SelectedItem.ToString();
+            lblProject.Text = selectedProject; 
+            DatabaseManager db = new DatabaseManager();
+            db.TrackProject(selectedProject);
+             UpdateTimer();
+        }
+
+        private void UpdateTimer()
+        {
+            if (listBox1.SelectedItem == null) return;
+            string selectedProject = listBox1.SelectedItem.ToString();
+
+            DatabaseManager db = new DatabaseManager();
+            var allTrackings = db.GetTrackings(selectedProject);
+
+            // Filter for current date and order by timestamp ascending
+            var todayTrackings = allTrackings
+                .Where(t => t.Timestamp.Date == DateTime.Today)
+                .OrderBy(t => t.Timestamp)
+                .ToList();
+
+            if (todayTrackings.Count == 0)
+            {
+                lblTimer.Text = "00:00:00";
+                return;
+            }
+
+            TimeSpan totalDuration = TimeSpan.Zero;
+
+            // Calculate duration between consecutive tracking points
+            for (int i = 0; i < todayTrackings.Count - 1; i++)
+            {
+                totalDuration += todayTrackings[i + 1].Timestamp - todayTrackings[i].Timestamp;
+            }
+
+            // Add duration from the last tracking point to current time
+            totalDuration += DateTime.Now - todayTrackings.Last().Timestamp;
+
+            // Update label with formatted total time (00h 00m 00s)
+            lblTimer.Text = string.Format("{0:D1}h {1:D1}m {2:D1}s", 
+                (int)totalDuration.TotalHours, 
+                totalDuration.Minutes, 
+                totalDuration.Seconds);
         }
 
 
