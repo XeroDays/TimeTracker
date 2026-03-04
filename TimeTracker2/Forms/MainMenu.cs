@@ -90,6 +90,25 @@ namespace TimeTracker2
             addForm.Show();
         }
 
+        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        {
+            if (listBox1.SelectedItem != null)
+            {
+                StartWorkflow();
+            }
+        }
+
+
+        private void StartWorkflow()
+        {
+                string selectedProject = listBox1.SelectedItem.ToString();
+                lblProject.Text = selectedProject;
+                
+                var db = new Helpers.DatabaseManager();
+                db.TrackProject(selectedProject);
+        }
+
+
         #region Draggable Form Logic
 
         private void SetupDraggable()

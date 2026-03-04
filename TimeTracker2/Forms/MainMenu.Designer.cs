@@ -33,10 +33,10 @@ namespace TimeTracker2
             btnAddProject = new PictureBox();
             label1 = new Label();
             label2 = new Label();
-            label3 = new Label();
-            label4 = new Label();
+            lblProject = new Label();
+            lblTimer = new Label();
             label5 = new Label();
-            label6 = new Label();
+            lblDate = new Label();
             ((System.ComponentModel.ISupportInitialize)btnClose).BeginInit();
             ((System.ComponentModel.ISupportInitialize)btnAddProject).BeginInit();
             SuspendLayout();
@@ -55,6 +55,7 @@ namespace TimeTracker2
             listBox1.Size = new Size(303, 400);
             listBox1.TabIndex = 0;
             listBox1.DrawItem += listBox1_DrawItem;
+            listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
             // 
             // btnClose
             // 
@@ -103,29 +104,29 @@ namespace TimeTracker2
             label2.TabIndex = 4;
             label2.Text = "Project";
             // 
-            // label3
+            // lblProject
             // 
-            label3.AutoSize = true;
-            label3.BackColor = Color.Transparent;
-            label3.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label3.ForeColor = Color.Yellow;
-            label3.Location = new Point(340, 192);
-            label3.Name = "label3";
-            label3.Size = new Size(265, 28);
-            label3.TabIndex = 5;
-            label3.Text = "Commercial Bank of Dubai";
+            this.lblProject.AutoSize = true;
+            this.lblProject.BackColor = Color.Transparent;
+            this.lblProject.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            this.lblProject.ForeColor = Color.Yellow;
+            this.lblProject.Location = new Point(340, 188);
+            this.lblProject.Name = "lblProject";
+            this.lblProject.Size = new Size(265, 28);
+            this.lblProject.TabIndex = 5;
+            this.lblProject.Text = "Commercial Bank of Dubai";
             // 
-            // label4
+            // lblTimer
             // 
-            label4.AutoSize = true;
-            label4.BackColor = Color.Transparent;
-            label4.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            label4.ForeColor = Color.Yellow;
-            label4.Location = new Point(340, 273);
-            label4.Name = "label4";
-            label4.Size = new Size(123, 28);
-            label4.TabIndex = 7;
-            label4.Text = "1h 43m 10s";
+            this.lblTimer.AutoSize = true;
+            this.lblTimer.BackColor = Color.Transparent;
+            this.lblTimer.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            this.lblTimer.ForeColor = Color.Yellow;
+            this.lblTimer.Location = new Point(340, 273);
+            this.lblTimer.Name = "lblTimer";
+            this.lblTimer.Size = new Size(123, 28);
+            this.lblTimer.TabIndex = 7;
+            this.lblTimer.Text = "1h 43m 10s";
             // 
             // label5
             // 
@@ -139,18 +140,18 @@ namespace TimeTracker2
             label5.TabIndex = 6;
             label5.Text = "Timer";
             // 
-            // label6
+            // lblDate
             // 
-            label6.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            label6.AutoSize = true;
-            label6.BackColor = Color.Transparent;
-            label6.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
-            label6.ForeColor = Color.White;
-            label6.Location = new Point(484, 426);
-            label6.Name = "label6";
-            label6.Size = new Size(183, 23);
-            label6.TabIndex = 8;
-            label6.Text = "Thursday 28-Nov-2026";
+            lblDate.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            lblDate.AutoSize = true;
+            lblDate.BackColor = Color.Transparent;
+            lblDate.Font = new Font("Segoe UI", 10.2F, FontStyle.Regular, GraphicsUnit.Point, 0);
+            lblDate.ForeColor = Color.White;
+            lblDate.Location = new Point(484, 426);
+            lblDate.Name = "lblDate";
+            lblDate.Size = new Size(183, 23);
+            lblDate.TabIndex = 8;
+            lblDate.Text = "Thursday 28-Nov-2026";
             // 
             // MainMenu
             // 
@@ -158,10 +159,10 @@ namespace TimeTracker2
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(15, 23, 42);
             ClientSize = new Size(670, 456);
-            Controls.Add(label6);
-            Controls.Add(label4);
+            Controls.Add(lblDate);
+            Controls.Add(this.lblTimer);
             Controls.Add(label5);
-            Controls.Add(label3);
+            Controls.Add(this.lblProject);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(btnAddProject);
@@ -185,9 +186,9 @@ namespace TimeTracker2
         private PictureBox btnAddProject;
         private Label label1;
         private Label label2;
-        private Label label3;
-        private Label label4;
+        private Label lblProject;
+        private Label lblTimer;
         private Label label5;
-        private Label label6;
+        private Label lblDate;
     }
 }

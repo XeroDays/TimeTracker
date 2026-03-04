@@ -1,9 +1,19 @@
+using System.Text.Json;
 using TimeTracker2.Enum;
 
 namespace TimeTracker2.Helpers
 {
     internal class DatabaseManager
     {
+        public void TrackProject(string projectName)
+        {
+            var trackingData = new { ProjectName = projectName, Timestamp = DateTime.Now };
+            string jsonString = JsonSerializer.Serialize(trackingData);
+
+            var fileHelper = new FileHelper();
+            fileHelper.AppendContent(FolderEnum.Trackings, jsonString);
+        }
+
         public bool Register(string name)
         {
             if (string.IsNullOrWhiteSpace(name))
