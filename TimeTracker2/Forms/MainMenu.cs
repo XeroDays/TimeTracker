@@ -113,36 +113,23 @@ namespace TimeTracker2
             string selectedProject = listBox1.SelectedItem.ToString();
 
             DatabaseManager db = new DatabaseManager();
-            var allTrackings = db.GetTrackings(selectedProject);
+            var projectInfo = db.GetProjectInfo(selectedProject);
 
-            // Filter for current date and order by timestamp ascending
-            var todayTrackings = allTrackings
-                .Where(t => t.Timestamp.Date == DateTime.Today)
-                .OrderBy(t => t.Timestamp)
-                .ToList();
-
-            if (todayTrackings.Count == 0)
+            if (projectInfo.FirstRecordDate == DateTime.MinValue)
             {
-                lblTimer.Text = "00:00:00";
+                lblTimer.Text = "00h 00m 00s";
+                lblDate.Text = DateTime.Today.ToString("dddd dd-MMM-yyyy");
                 return;
             }
 
-            TimeSpan totalDuration = TimeSpan.Zero;
-
-            // Calculate duration between consecutive tracking points
-            for (int i = 0; i < todayTrackings.Count - 1; i++)
-            {
-                totalDuration += todayTrackings[i + 1].Timestamp - todayTrackings[i].Timestamp;
-            }
-
-            // Add duration from the last tracking point to current time
-            totalDuration += DateTime.Now - todayTrackings.Last().Timestamp;
-
             // Update label with formatted total time (00h 00m 00s)
-            lblTimer.Text = string.Format("{0:D1}h {1:D1}m {2:D1}s", 
-                (int)totalDuration.TotalHours, 
-                totalDuration.Minutes, 
-                totalDuration.Seconds);
+            lblTimer.Text = string.Format("{0:D2}h {1:D2}m {2:D2}s", 
+                (int)projectInfo.Duration.TotalHours, 
+                projectInfo.Duration.Minutes, 
+                projectInfo.Duration.Seconds);
+
+            // Update date label with the first record's date
+            lblDate.Text = projectInfo.FirstRecordDate.ToString("dddd dd-MMM-yyyy");
         }
 
 
