@@ -28,6 +28,7 @@ namespace TimeTracker2
         /// </summary>
         private void InitializeComponent()
         {
+            components = new System.ComponentModel.Container();
             listBox1 = new ListBox();
             btnClose = new PictureBox();
             btnAddProject = new PictureBox();
@@ -37,8 +38,12 @@ namespace TimeTracker2
             lblTimer = new Label();
             label5 = new Label();
             lblDate = new Label();
+            btnMinimize = new PictureBox();
+            trayContextMenu = new ContextMenuStrip(components);
+            notifyIcon = new NotifyIcon(components);
             ((System.ComponentModel.ISupportInitialize)btnClose).BeginInit();
             ((System.ComponentModel.ISupportInitialize)btnAddProject).BeginInit();
+            ((System.ComponentModel.ISupportInitialize)btnMinimize).BeginInit();
             SuspendLayout();
             // 
             // listBox1
@@ -55,13 +60,13 @@ namespace TimeTracker2
             listBox1.Size = new Size(303, 400);
             listBox1.TabIndex = 0;
             listBox1.DrawItem += listBox1_DrawItem;
-            listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
+            listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
             // 
             // btnClose
             // 
             btnClose.Anchor = AnchorStyles.Top | AnchorStyles.Right;
             btnClose.Image = Properties.Resources.icons8_cross_96;
-            btnClose.Location = new Point(635, 3);
+            btnClose.Location = new Point(632, 7);
             btnClose.Name = "btnClose";
             btnClose.Size = new Size(32, 31);
             btnClose.SizeMode = PictureBoxSizeMode.StretchImage;
@@ -86,7 +91,7 @@ namespace TimeTracker2
             label1.BackColor = Color.Transparent;
             label1.Font = new Font("Segoe UI", 16.2F, FontStyle.Bold, GraphicsUnit.Point, 0);
             label1.ForeColor = SystemColors.ButtonFace;
-            label1.Location = new Point(340, 12);
+            label1.Location = new Point(340, 67);
             label1.Name = "label1";
             label1.Size = new Size(289, 38);
             label1.TabIndex = 3;
@@ -106,27 +111,27 @@ namespace TimeTracker2
             // 
             // lblProject
             // 
-            this.lblProject.AutoSize = true;
-            this.lblProject.BackColor = Color.Transparent;
-            this.lblProject.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            this.lblProject.ForeColor = Color.Yellow;
-            this.lblProject.Location = new Point(340, 188);
-            this.lblProject.Name = "lblProject";
-            this.lblProject.Size = new Size(265, 28);
-            this.lblProject.TabIndex = 5;
-            this.lblProject.Text = "Commercial Bank of Dubai";
+            lblProject.AutoSize = true;
+            lblProject.BackColor = Color.Transparent;
+            lblProject.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblProject.ForeColor = Color.Yellow;
+            lblProject.Location = new Point(340, 188);
+            lblProject.Name = "lblProject";
+            lblProject.Size = new Size(265, 28);
+            lblProject.TabIndex = 5;
+            lblProject.Text = "Commercial Bank of Dubai";
             // 
             // lblTimer
             // 
-            this.lblTimer.AutoSize = true;
-            this.lblTimer.BackColor = Color.Transparent;
-            this.lblTimer.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
-            this.lblTimer.ForeColor = Color.Yellow;
-            this.lblTimer.Location = new Point(340, 273);
-            this.lblTimer.Name = "lblTimer";
-            this.lblTimer.Size = new Size(123, 28);
-            this.lblTimer.TabIndex = 7;
-            this.lblTimer.Text = "1h 43m 10s";
+            lblTimer.AutoSize = true;
+            lblTimer.BackColor = Color.Transparent;
+            lblTimer.Font = new Font("Segoe UI", 12F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            lblTimer.ForeColor = Color.Yellow;
+            lblTimer.Location = new Point(340, 273);
+            lblTimer.Name = "lblTimer";
+            lblTimer.Size = new Size(123, 28);
+            lblTimer.TabIndex = 7;
+            lblTimer.Text = "1h 43m 10s";
             // 
             // label5
             // 
@@ -153,16 +158,43 @@ namespace TimeTracker2
             lblDate.TabIndex = 8;
             lblDate.Text = "Thursday 28-Nov-2026";
             // 
+            // btnMinimize
+            // 
+            btnMinimize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
+            btnMinimize.Image = Properties.Resources.icons8_minimize_100;
+            btnMinimize.Location = new Point(597, 7);
+            btnMinimize.Name = "btnMinimize";
+            btnMinimize.Size = new Size(32, 31);
+            btnMinimize.SizeMode = PictureBoxSizeMode.StretchImage;
+            btnMinimize.TabIndex = 9;
+            btnMinimize.TabStop = false;
+            btnMinimize.Click += btnMinimize_Click;
+            // 
+            // trayContextMenu
+            // 
+            trayContextMenu.ImageScalingSize = new Size(20, 20);
+            trayContextMenu.Name = "trayContextMenu";
+            trayContextMenu.Size = new Size(211, 4);
+            trayContextMenu.Opening += trayContextMenu_Opening;
+            // 
+            // notifyIcon
+            // 
+            notifyIcon.ContextMenuStrip = trayContextMenu;
+            notifyIcon.Text = "Time Tracker";
+            notifyIcon.Visible = false;
+            notifyIcon.DoubleClick += notifyIcon_DoubleClick;
+            // 
             // MainMenu
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(15, 23, 42);
             ClientSize = new Size(670, 456);
+            Controls.Add(btnMinimize);
             Controls.Add(lblDate);
-            Controls.Add(this.lblTimer);
+            Controls.Add(lblTimer);
             Controls.Add(label5);
-            Controls.Add(this.lblProject);
+            Controls.Add(lblProject);
             Controls.Add(label2);
             Controls.Add(label1);
             Controls.Add(btnAddProject);
@@ -173,8 +205,11 @@ namespace TimeTracker2
             StartPosition = FormStartPosition.CenterScreen;
             Text = "MainMenu";
             Load += MainMenu_Load;
+            Resize += MainMenu_Resize;
+            FormClosing += MainMenu_FormClosing;
             ((System.ComponentModel.ISupportInitialize)btnClose).EndInit();
             ((System.ComponentModel.ISupportInitialize)btnAddProject).EndInit();
+            ((System.ComponentModel.ISupportInitialize)btnMinimize).EndInit();
             ResumeLayout(false);
             PerformLayout();
         }
@@ -190,5 +225,8 @@ namespace TimeTracker2
         private Label lblTimer;
         private Label label5;
         private Label lblDate;
+        private PictureBox btnMinimize;
+        private ContextMenuStrip trayContextMenu;
+        private NotifyIcon notifyIcon;
     }
 }

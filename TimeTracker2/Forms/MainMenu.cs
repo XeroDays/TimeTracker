@@ -8,6 +8,7 @@ namespace TimeTracker2
         private bool dragging = false;
         private Point dragCursorPoint;
         private Point dragFormPoint;
+        private Icon? _trayIcon;
 
         public MainMenu()
         {
@@ -19,6 +20,9 @@ namespace TimeTracker2
         {
             LoadProjects();
             StartDefaultProject();
+            InitializeTrayIcon();
+            BuildTrayContextMenu();
+            notifyIcon.Visible = true;
         }
 
         private void StartDefaultProject()
@@ -27,7 +31,7 @@ namespace TimeTracker2
             string defaultProject = db.GetDefaultProject();
 
             // Temporarily detach to avoid adding a new tracking entry on startup
-            listBox1.SelectedIndexChanged -= listBox1_SelectedIndexChanged;
+            listBox1.SelectedIndexChanged -= ListBox1_SelectedIndexChanged;
 
             if (!string.IsNullOrWhiteSpace(defaultProject))
             {
@@ -48,7 +52,7 @@ namespace TimeTracker2
             }
 
             UpdateTimer();
-            listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
+            listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
         }
 
         private void LoadProjects()
@@ -111,35 +115,119 @@ namespace TimeTracker2
             {
                 this.Show();
                 LoadProjects();
+                BuildTrayContextMenu();
             };
             addForm.Show();
         }
 
-        private void listBox1_SelectedIndexChanged(object sender, EventArgs e)
+        private void ListBox1_SelectedIndexChanged(object sender, EventArgs e)
         {
             if (listBox1.SelectedItem != null)
             {
-                StartWorkflow();
+                ApplyProjectSelection(listBox1.SelectedItem.ToString()!);
             }
         }
 
-
-        private void StartWorkflow()
+        private void ApplyProjectSelection(string projectName)
         {
-            if (listBox1.SelectedItem == null) return;
-            
-            string selectedProject = listBox1.SelectedItem.ToString();
-            lblProject.Text = selectedProject; 
-            DatabaseManager db = new DatabaseManager();
-            db.TrackProject(selectedProject);
-            db.SetDefaultProject(selectedProject); // Mark as default
+            lblProject.Text = projectName;
+            var db = new DatabaseManager();
+            db.TrackProject(projectName);
+            db.SetDefaultProject(projectName);
+            SyncListBoxSelection(projectName);
             UpdateTimer();
+        }
+
+        private void SyncListBoxSelection(string projectName)
+        {
+            listBox1.SelectedIndexChanged -= ListBox1_SelectedIndexChanged;
+            for (int i = 0; i < listBox1.Items.Count; i++)
+            {
+                if (listBox1.Items[i].ToString() == projectName)
+                {
+                    listBox1.SelectedIndex = i;
+                    break;
+                }
+            }
+            listBox1.SelectedIndexChanged += ListBox1_SelectedIndexChanged;
+        }
+
+        private void InitializeTrayIcon()
+        {
+            using var bmp = new Bitmap(Properties.Resources.icons8_add_96, 16, 16);
+            var tempIcon = Icon.FromHandle(bmp.GetHicon());
+            _trayIcon = (Icon)tempIcon.Clone();
+            notifyIcon.Icon = _trayIcon;
+        }
+
+        private void trayContextMenu_Opening(object? sender, System.ComponentModel.CancelEventArgs e)
+        {
+            BuildTrayContextMenu();
+        }
+
+        private void BuildTrayContextMenu()
+        {
+            trayContextMenu.Items.Clear();
+
+            var db = new DatabaseManager();
+            var projects = db.GetProjects();
+            var defaultProject = db.GetDefaultProject();
+
+            foreach (var project in projects)
+            {
+                if (string.IsNullOrWhiteSpace(project)) continue;
+
+                var item = new ToolStripMenuItem(project)
+                {
+                    CheckOnClick = false,
+                    Checked = project == defaultProject
+                };
+                item.Click += TrayProjectItem_Click;
+                trayContextMenu.Items.Add(item);
+            }
+
+            if (trayContextMenu.Items.Count > 0)
+            {
+                trayContextMenu.Items.Add(new ToolStripSeparator());
+            }
+
+            var showItem = new ToolStripMenuItem("Show");
+            showItem.Click += (s, _) => RestoreFromTray();
+            trayContextMenu.Items.Add(showItem);
+
+            var exitItem = new ToolStripMenuItem("Exit");
+            exitItem.Click += (s, _) => Application.Exit();
+            trayContextMenu.Items.Add(exitItem);
+        }
+
+        private void TrayProjectItem_Click(object? sender, EventArgs e)
+        {
+            if (sender is ToolStripMenuItem item && !string.IsNullOrWhiteSpace(item.Text))
+            {
+                ApplyProjectSelection(item.Text);
+                BuildTrayContextMenu();
+            }
+        }
+
+        private void RestoreFromTray()
+        {
+            ShowInTaskbar = true;
+            Show();
+            WindowState = FormWindowState.Normal;
+            BringToFront();
+            Activate();
+        }
+
+        private void notifyIcon_DoubleClick(object? sender, EventArgs e)
+        {
+            RestoreFromTray();
         }
 
         private void UpdateTimer()
         {
             if (listBox1.SelectedItem == null) return;
-            string selectedProject = listBox1.SelectedItem.ToString();
+            string? selectedProject = listBox1.SelectedItem.ToString();
+            if (string.IsNullOrWhiteSpace(selectedProject)) return;
 
             DatabaseManager db = new DatabaseManager();
             var projectInfo = db.GetProjectInfo(selectedProject);
@@ -152,9 +240,9 @@ namespace TimeTracker2
             }
 
             // Update label with formatted total time (00h 00m 00s)
-            lblTimer.Text = string.Format("{0:D2}h {1:D2}m {2:D2}s", 
-                (int)projectInfo.Duration.TotalHours, 
-                projectInfo.Duration.Minutes, 
+            lblTimer.Text = string.Format("{0:D2}h {1:D2}m {2:D2}s",
+                (int)projectInfo.Duration.TotalHours,
+                projectInfo.Duration.Minutes,
                 projectInfo.Duration.Seconds);
 
             // Update date label with the first record's date
@@ -193,5 +281,27 @@ namespace TimeTracker2
         }
 
         #endregion
+
+        private void btnMinimize_Click(object sender, EventArgs e)
+        {
+            ShowInTaskbar = false;
+            Hide();
+        }
+
+        private void MainMenu_Resize(object? sender, EventArgs e)
+        {
+            if (WindowState == FormWindowState.Minimized)
+            {
+                ShowInTaskbar = false;
+                Hide();
+            }
+        }
+
+        private void MainMenu_FormClosing(object sender, FormClosingEventArgs e)
+        {
+            notifyIcon.Visible = false;
+            notifyIcon.Dispose();
+            _trayIcon?.Dispose();
+        }
     }
 }
