@@ -145,5 +145,17 @@ namespace TimeTracker2.Helpers
             var fileHelper = new FileHelper();
             return fileHelper.ReadLines(FolderEnum.Projects);
         }
+
+        public void SetDefaultProject(string projectName)
+        {
+            var fileHelper = new FileHelper();
+            fileHelper.WriteContent(FolderEnum.DefaultProject, projectName);
+        }
+
+        public string GetDefaultProject()
+        {
+            var fileHelper = new FileHelper();
+            return fileHelper.ReadContent(FolderEnum.DefaultProject);
+        }
     }
 }

@@ -4,6 +4,7 @@ namespace TimeTracker2.Enum
     {
         Authentication,
         Projects,
-        Trackings
+        Trackings,
+        DefaultProject
     }
 }

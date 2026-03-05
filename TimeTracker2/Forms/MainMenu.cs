@@ -18,12 +18,43 @@ namespace TimeTracker2
         private void MainMenu_Load(object sender, EventArgs e)
         {
             LoadProjects();
+            StartDefaultProject();
+        }
+
+        private void StartDefaultProject()
+        {
+            var db = new DatabaseManager();
+            string defaultProject = db.GetDefaultProject();
+
+            // Temporarily detach to avoid adding a new tracking entry on startup
+            listBox1.SelectedIndexChanged -= listBox1_SelectedIndexChanged;
+
+            if (!string.IsNullOrWhiteSpace(defaultProject))
+            {
+                for (int i = 0; i < listBox1.Items.Count; i++)
+                {
+                    if (listBox1.Items[i].ToString() == defaultProject)
+                    {
+                        listBox1.SelectedIndex = i;
+                        lblProject.Text = defaultProject;
+                        break;
+                    }
+                }
+            }
+            else if (listBox1.Items.Count > 0)
+            {
+                listBox1.SelectedIndex = 0;
+                lblProject.Text = listBox1.Items[0].ToString();
+            }
+
+            UpdateTimer();
+            listBox1.SelectedIndexChanged += listBox1_SelectedIndexChanged;
         }
 
         private void LoadProjects()
         {
             listBox1.Items.Clear();
-            DatabaseManager db = new DatabaseManager();
+            var db = new DatabaseManager();
             var projects = db.GetProjects();
 
             foreach (var project in projects)
@@ -32,11 +63,6 @@ namespace TimeTracker2
                 {
                     listBox1.Items.Add(project);
                 }
-            }
-
-            if (listBox1.Items.Count > 0)
-            {
-                listBox1.SelectedIndex = 0;
             }
         }
 
@@ -100,11 +126,14 @@ namespace TimeTracker2
 
         private void StartWorkflow()
         {
+            if (listBox1.SelectedItem == null) return;
+            
             string selectedProject = listBox1.SelectedItem.ToString();
             lblProject.Text = selectedProject; 
             DatabaseManager db = new DatabaseManager();
             db.TrackProject(selectedProject);
-             UpdateTimer();
+            db.SetDefaultProject(selectedProject); // Mark as default
+            UpdateTimer();
         }
 
         private void UpdateTimer()
