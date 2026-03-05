@@ -14,11 +14,35 @@ namespace TimeTracker2.Helpers
     {
         public void TrackProject(string projectName)
         {
-            var trackingData = new TrackingEntry { ProjectName = projectName, Timestamp = DateTime.Now };
-            string jsonString = JsonSerializer.Serialize(trackingData);
-
+            var trackings = GetTrackings(projectName);
+            
+            // Only add if there are no trackings yet, or if the last tracking isn't already for this project
+            // Note: GetTrackings already filters by projectName, so we need to check all trackings 
+            // to see if the absolute last entry in the file is different.
+            
             var fileHelper = new FileHelper();
-            fileHelper.AppendContent(FolderEnum.Trackings, jsonString);
+            var allLines = fileHelper.ReadLines(FolderEnum.Trackings);
+            string lastProjectName = string.Empty;
+
+            if (allLines.Count > 0)
+            {
+                try
+                {
+                    var lastEntry = JsonSerializer.Deserialize<TrackingEntry>(allLines.Last());
+                    if (lastEntry != null)
+                    {
+                        lastProjectName = lastEntry.ProjectName;
+                    }
+                }
+                catch { }
+            }
+
+            if (lastProjectName != projectName)
+            {
+                var trackingData = new TrackingEntry { ProjectName = projectName, Timestamp = DateTime.Now };
+                string jsonString = JsonSerializer.Serialize(trackingData);
+                fileHelper.AppendContent(FolderEnum.Trackings, jsonString);
+            }
         }
 
         public List<TrackingEntry> GetTrackings(string projectName)
