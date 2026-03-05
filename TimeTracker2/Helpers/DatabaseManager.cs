@@ -18,14 +18,19 @@ namespace TimeTracker2.Helpers
 
     internal class DatabaseManager
     {
+        private static readonly TimeSpan OfficeClosingTime = new TimeSpan(18, 0, 0); // 6:00 PM
+
         public ProjectInfoDTO GetProjectInfo(string projectName)
         {
             var allTrackings = GetAllTrackings().OrderBy(t => t.Timestamp).ToList();
             
             // Filter for today's trackings specifically for THIS project
-            var todayProjectTrackings = allTrackings  .Where(t => t.Timestamp.Date == DateTime.Today && t.ProjectName == projectName) .ToList();
+            var todayProjectTrackings = allTrackings
+                .Where(t => t.Timestamp.Date == DateTime.Today && t.ProjectName == projectName)
+                .ToList();
 
             var info = new ProjectInfoDTO();
+            var closingTimeToday = DateTime.Today.Add(OfficeClosingTime);
 
             if (todayProjectTrackings.Count > 0)
             {
@@ -34,23 +39,20 @@ namespace TimeTracker2.Helpers
 
                 foreach (var startEntry in todayProjectTrackings)
                 {
-                    // Find the next entry in the full list (any project) to see when this session ended
                     var nextEntry = allTrackings
                         .Where(t => t.Timestamp > startEntry.Timestamp)
                         .FirstOrDefault();
 
-                    if (nextEntry != null)
-                    {
-                        // If the next entry is today, add the difference
-                        // If it's a different day, we might want to cap it at end of day, 
-                        // but for now let's just take the difference if it's the next event.
-                        totalDuration += nextEntry.Timestamp - startEntry.Timestamp;
-                    }
-                    else
-                    {
-                        // This is the absolute last entry in the system
-                        totalDuration += DateTime.Now - startEntry.Timestamp;
-                    }
+                    DateTime effectiveEnd = nextEntry != null
+                        ? nextEntry.Timestamp
+                        : DateTime.Now;
+
+                    // Cap at office closing time (6:00 PM)
+                    if (effectiveEnd > closingTimeToday)
+                        effectiveEnd = closingTimeToday;
+
+                    if (effectiveEnd > startEntry.Timestamp)
+                        totalDuration += effectiveEnd - startEntry.Timestamp;
                 }
                 
                 info.Duration = totalDuration;
