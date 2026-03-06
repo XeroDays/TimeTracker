@@ -41,6 +41,7 @@ namespace TimeTracker
             btnMinimize = new PictureBox();
             trayContextMenu = new ContextMenuStrip(components);
             notifyIcon = new NotifyIcon(components);
+            btnExport = new Button();
             ((System.ComponentModel.ISupportInitialize)btnClose).BeginInit();
             ((System.ComponentModel.ISupportInitialize)btnAddProject).BeginInit();
             ((System.ComponentModel.ISupportInitialize)btnMinimize).BeginInit();
@@ -183,12 +184,28 @@ namespace TimeTracker
             notifyIcon.Text = "Time Tracker";
             notifyIcon.DoubleClick += notifyIcon_DoubleClick;
             // 
+            // btnExport
+            // 
+            btnExport.BackColor = Color.GreenYellow;
+            btnExport.FlatAppearance.BorderColor = Color.FromArgb(0, 64, 0);
+            btnExport.FlatStyle = FlatStyle.Flat;
+            btnExport.Font = new Font("Segoe UI", 9F, FontStyle.Bold, GraphicsUnit.Point, 0);
+            btnExport.ForeColor = Color.FromArgb(0, 64, 0);
+            btnExport.Location = new Point(340, 377);
+            btnExport.Name = "btnExport";
+            btnExport.Size = new Size(102, 35);
+            btnExport.TabIndex = 10;
+            btnExport.Text = "Export";
+            btnExport.UseVisualStyleBackColor = false;
+            btnExport.Click += btnExport_Click;
+            // 
             // MainMenu
             // 
             AutoScaleDimensions = new SizeF(8F, 20F);
             AutoScaleMode = AutoScaleMode.Font;
             BackColor = Color.FromArgb(15, 23, 42);
             ClientSize = new Size(670, 456);
+            Controls.Add(btnExport);
             Controls.Add(btnMinimize);
             Controls.Add(lblDate);
             Controls.Add(lblTimer);
@@ -227,5 +244,6 @@ namespace TimeTracker
         private PictureBox btnMinimize;
         private ContextMenuStrip trayContextMenu;
         private NotifyIcon notifyIcon;
+        private Button btnExport;
     }
 }

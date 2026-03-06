@@ -90,18 +90,35 @@ namespace TimeTracker.Helpers
             foreach (var line in lines)
             {
                 if (string.IsNullOrWhiteSpace(line)) continue;
+                ParseLineToTrackings(line, trackings);
+            }
+
+            return trackings;
+        }
+
+        private static void ParseLineToTrackings(string line, List<TrackingEntry> trackings)
+        {
+            var jsonParts = line.Split(new[] { "}{" }, StringSplitOptions.None);
+            for (int i = 0; i < jsonParts.Length; i++)
+            {
+                string json = jsonParts.Length == 1
+                    ? jsonParts[i]
+                    : i == 0
+                        ? jsonParts[i] + "}"
+                        : i == jsonParts.Length - 1
+                            ? "{" + jsonParts[i]
+                            : "{" + jsonParts[i] + "}";
+                if (string.IsNullOrWhiteSpace(json)) continue;
                 try
                 {
-                    var entry = JsonSerializer.Deserialize<TrackingEntry>(line);
+                    var entry = JsonSerializer.Deserialize<TrackingEntry>(json);
                     if (entry != null)
                     {
                         trackings.Add(entry);
                     }
                 }
-                catch { /* Skip malformed lines */ }
+                catch { /* Skip malformed JSON */ }
             }
-
-            return trackings;
         }
 
         [Obsolete("Use GetAllTrackings() instead and filter by project name manually if needed.")]
@@ -154,6 +171,58 @@ namespace TimeTracker.Helpers
         {
             var fileHelper = new FileHelper();
             return fileHelper.ReadContent(FolderEnum.DefaultProject);
+        }
+
+        public Dictionary<(string Project, DateTime Date), double> GetAllProjectHoursByDate()
+        {
+            var result = new Dictionary<(string Project, DateTime Date), double>();
+            var allTrackingsFull = GetAllTrackings().OrderBy(t => t.Timestamp).ToList();
+            var trackingsExcludingPause = allTrackingsFull
+                .Where(t => t.ProjectName != PauseProjectName)
+                .ToList();
+
+            foreach (var startEntry in trackingsExcludingPause)
+            {
+                var nextTracking = allTrackingsFull
+                    .FirstOrDefault(t => t.Timestamp > startEntry.Timestamp);
+                var sessionEnd = nextTracking != null
+                    ? nextTracking.Timestamp
+                    : DateTime.Now;
+
+                var start = startEntry.Timestamp;
+                var end = sessionEnd;
+                var project = startEntry.ProjectName;
+
+                var currentDate = start.Date;
+                var lastDate = end.Date;
+
+                while (currentDate <= lastDate)
+                {
+                    var dayStart = currentDate;
+                    var dayEnd = currentDate.AddDays(1).AddTicks(-1);
+
+                    var effectiveStart = start > dayStart ? start : dayStart;
+                    var effectiveEnd = end < dayEnd ? end : dayEnd;
+
+                    if (effectiveStart < effectiveEnd)
+                    {
+                        var duration = (effectiveEnd - effectiveStart).TotalHours;
+                        var key = (project, currentDate);
+                        if (!result.ContainsKey(key))
+                            result[key] = 0;
+                        result[key] += duration;
+                    }
+
+                    currentDate = currentDate.AddDays(1);
+                }
+            }
+
+            var rounded = new Dictionary<(string Project, DateTime Date), double>();
+            foreach (var kv in result)
+            {
+                rounded[kv.Key] = Math.Round(kv.Value, 2);
+            }
+            return rounded;
         }
     }
 }
