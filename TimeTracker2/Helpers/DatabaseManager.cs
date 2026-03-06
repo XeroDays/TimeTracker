@@ -18,19 +18,17 @@ namespace TimeTracker.Helpers
 
     internal class DatabaseManager
     {
-        private static readonly TimeSpan OfficeClosingTime = new TimeSpan(18, 0, 0); // 6:00 PM
+        public const string PauseProjectName = "Pause";
 
         public ProjectInfoDTO GetProjectInfo(string projectName)
         {
             var allTrackings = GetAllTrackings().OrderBy(t => t.Timestamp).ToList();
             
-            // Filter for today's trackings specifically for THIS project
             var todayProjectTrackings = allTrackings
                 .Where(t => t.Timestamp.Date == DateTime.Today && t.ProjectName == projectName)
                 .ToList();
 
             var info = new ProjectInfoDTO();
-            var closingTimeToday = DateTime.Today.Add(OfficeClosingTime);
 
             if (todayProjectTrackings.Count > 0)
             {
@@ -43,16 +41,14 @@ namespace TimeTracker.Helpers
                         .Where(t => t.Timestamp > startEntry.Timestamp)
                         .FirstOrDefault();
 
-                    DateTime effectiveEnd = nextEntry != null
-                        ? nextEntry.Timestamp
-                        : DateTime.Now;
-
-                    // Cap at office closing time (6:00 PM)
-                    if (effectiveEnd > closingTimeToday)
-                        effectiveEnd = closingTimeToday;
-
-                    if (effectiveEnd > startEntry.Timestamp)
-                        totalDuration += effectiveEnd - startEntry.Timestamp;
+                    if (nextEntry != null)
+                    {
+                        totalDuration += nextEntry.Timestamp - startEntry.Timestamp;
+                    }
+                    else
+                    {
+                        totalDuration += DateTime.Now - startEntry.Timestamp;
+                    }
                 }
                 
                 info.Duration = totalDuration;
