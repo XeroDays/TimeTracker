@@ -1,0 +1,53 @@
+name: Create Release Pipeline
+
+on:
+  release:
+    types: [published]
+
+env:
+  PROJECT_NAME: TimeTracker2
+  PROJECT_PATH: ./TimeTracker2/TimeTracker2.csproj
+  BUILD_PATH: ./TimeTracker2/bin/Release/net10.0-windows
+  ZIP_NAME: TimeTracker2.zip
+
+jobs:
+  build-and-release:
+    name: Pipeline to Release
+    runs-on: windows-latest
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
+      - name: Build the project
+        run: dotnet build ${{ env.PROJECT_PATH }} -c Release --no-restore
+
+      - name: Zip the build folder
+        run: |
+          Compress-Archive -Path "${{ env.BUILD_PATH }}\*" -DestinationPath "${{ env.BUILD_PATH }}\${{ env.ZIP_NAME }}"
+
+      - name: Upload build artifacts
+        uses: actions/upload-artifact@v4
+        with:
+          name: build
+          path: ${{ env.BUILD_PATH }}/${{ env.ZIP_NAME }}
+
+      - name: Download build artifacts
+        uses: actions/download-artifact@v4
+        with:
+          name: build
+
+      - name: Upload zip to GitHub Release
+        uses: softprops/action-gh-release@v2
+        with:
+          files: ${{ env.ZIP_NAME }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}

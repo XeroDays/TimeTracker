@@ -161,7 +161,7 @@ namespace TimeTracker2
             // btnMinimize
             // 
             btnMinimize.Anchor = AnchorStyles.Top | AnchorStyles.Right;
-            btnMinimize.Image = Properties.Resources.icons8_minimize_100;
+            btnMinimize.Image = Properties.Resources.icons8_minimize_96;
             btnMinimize.Location = new Point(597, 7);
             btnMinimize.Name = "btnMinimize";
             btnMinimize.Size = new Size(32, 31);
@@ -174,14 +174,13 @@ namespace TimeTracker2
             // 
             trayContextMenu.ImageScalingSize = new Size(20, 20);
             trayContextMenu.Name = "trayContextMenu";
-            trayContextMenu.Size = new Size(211, 4);
+            trayContextMenu.Size = new Size(61, 4);
             trayContextMenu.Opening += trayContextMenu_Opening;
             // 
             // notifyIcon
             // 
             notifyIcon.ContextMenuStrip = trayContextMenu;
             notifyIcon.Text = "Time Tracker";
-            notifyIcon.Visible = false;
             notifyIcon.DoubleClick += notifyIcon_DoubleClick;
             // 
             // MainMenu
@@ -204,9 +203,9 @@ namespace TimeTracker2
             Name = "MainMenu";
             StartPosition = FormStartPosition.CenterScreen;
             Text = "MainMenu";
+            FormClosing += MainMenu_FormClosing;
             Load += MainMenu_Load;
             Resize += MainMenu_Resize;
-            FormClosing += MainMenu_FormClosing;
             ((System.ComponentModel.ISupportInitialize)btnClose).EndInit();
             ((System.ComponentModel.ISupportInitialize)btnAddProject).EndInit();
             ((System.ComponentModel.ISupportInitialize)btnMinimize).EndInit();

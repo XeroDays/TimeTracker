@@ -154,7 +154,7 @@ namespace TimeTracker2
 
         private void InitializeTrayIcon()
         {
-            using var bmp = new Bitmap(Properties.Resources.icons8_add_96, 16, 16);
+            using var bmp = new Bitmap(Properties.Resources.Logo__1_, 40, 40);
             var tempIcon = Icon.FromHandle(bmp.GetHicon());
             _trayIcon = (Icon)tempIcon.Clone();
             notifyIcon.Icon = _trayIcon;
@@ -195,9 +195,25 @@ namespace TimeTracker2
             showItem.Click += (s, _) => RestoreFromTray();
             trayContextMenu.Items.Add(showItem);
 
+            var startWithWindowsItem = new ToolStripMenuItem("Start with Windows")
+            {
+                CheckOnClick = true,
+                Checked = StartupHelper.IsRunAtStartupEnabled()
+            };
+            startWithWindowsItem.Click += StartWithWindowsItem_Click;
+            trayContextMenu.Items.Add(startWithWindowsItem);
+
             var exitItem = new ToolStripMenuItem("Exit");
             exitItem.Click += (s, _) => Application.Exit();
             trayContextMenu.Items.Add(exitItem);
+        }
+
+        private void StartWithWindowsItem_Click(object? sender, EventArgs e)
+        {
+            if (sender is ToolStripMenuItem item)
+            {
+                StartupHelper.SetRunAtStartup(item.Checked);
+            }
         }
 
         private void TrayProjectItem_Click(object? sender, EventArgs e)
