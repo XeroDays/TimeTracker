@@ -2,9 +2,9 @@ using System;
 using System.Collections.Generic;
 using System.IO;
 using System.Text;
-using TimeTracker2.Enum;
+using TimeTracker.Enum;
 
-namespace TimeTracker2.Helpers
+namespace TimeTracker.Helpers
 {
     internal class FileHelper
     {

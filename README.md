@@ -1,9 +1,9 @@
-# TimeTracker2
+# TimeTracker
 
 A modern, dark-themed Timesheet Tracker built with .NET 10.0 and Windows Forms.
 
 ## Overview
-TimeTracker2 is a desktop application designed to help users track their daily tasks and projects with a clean, modern user interface. It features a custom card-based design, automated login, and persistent data storage.
+TimeTracker is a desktop application designed to help users track their daily tasks and projects with a clean, modern user interface. It features a custom card-based design, automated login, and persistent data storage.
 
 ## Key Features
 - **Modern UI/UX:** Dark-themed interface using a navy and slate color palette with sky blue accents.

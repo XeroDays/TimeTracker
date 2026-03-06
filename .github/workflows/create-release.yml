@@ -5,12 +5,12 @@ on:
     types: [published]
 
 env:
-  PROJECT_NAME: TimeTracker2
-  PROJECT_PATH: ./TimeTracker2/TimeTracker2.csproj
+  PROJECT_NAME: TimeTracker
+  PROJECT_PATH: ./TimeTracker2/TimeTracker.csproj
   BUILD_PATH: ./TimeTracker2/bin/Release/net10.0-windows
-  ZIP_NAME: TimeTracker2.zip
+  ZIP_NAME: TimeTracker.zip
   ISS_FILE: ./SetupInstaller.iss
-  INSTALLER_PATH: ./Output/TimeTracker2Setup.exe
+  INSTALLER_PATH: ./Output/TimeTrackerSetup.exe
 
 jobs:
   build-and-release:

@@ -1,4 +1,4 @@
-namespace TimeTracker2
+namespace TimeTracker
 {
     partial class MainMenu
     {

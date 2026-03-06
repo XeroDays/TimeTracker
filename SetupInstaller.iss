@@ -1,10 +1,10 @@
-; TimeTracker2 Inno Setup script
+; TimeTracker Inno Setup script
 ; Paths are relative to this script (repo root)
 
 #define MyAppName "Time Tracker"
 #define MyAppVersion "1.0"
-#define MyAppPublisher "TimeTracker2"
-#define MyAppExeName "TimeTracker2.exe"
+#define MyAppPublisher "TimeTracker"
+#define MyAppExeName "TimeTracker.exe"
 #define BuildPath "TimeTracker2\bin\Release\net10.0-windows"
 
 [Setup]
@@ -16,7 +16,7 @@ DefaultDirName={autopf}\{#MyAppName}
 DefaultGroupName={#MyAppName}
 AllowNoIcons=yes
 OutputDir=Output
-OutputBaseFilename=TimeTracker2Setup
+OutputBaseFilename=TimeTrackerSetup
 Compression=lzma2
 SolidCompression=yes
 WizardStyle=modern

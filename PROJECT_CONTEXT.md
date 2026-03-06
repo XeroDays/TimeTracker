@@ -1,10 +1,10 @@
 # Project Context & Session History
 
-This file maintains the ongoing context of the TimeTracker2 project. 
+This file maintains the ongoing context of the TimeTracker project. 
 **LLM Instruction:** Read this file first to understand the current state, conventions, and recent changes. Update this file after significant milestones to maintain a continuous development context.
 
 ## Current Project State
-- **Project Name:** TimeTracker2
+- **Project Name:** TimeTracker
 - **Framework:** .NET 10.0 Windows Forms
 - **Architecture:** 
   - `Helpers/`: Contains `FileHelper` (file I/O) and `DatabaseManager` (business logic).

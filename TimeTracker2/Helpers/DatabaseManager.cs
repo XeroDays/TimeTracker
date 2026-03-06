@@ -1,8 +1,8 @@
 using System.Linq;
 using System.Text.Json;
-using TimeTracker2.Enum;
+using TimeTracker.Enum;
 
-namespace TimeTracker2.Helpers
+namespace TimeTracker.Helpers
 {
     internal class TrackingEntry
     {

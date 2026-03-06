@@ -1,7 +1,7 @@
-using TimeTracker2.Forms;
-using TimeTracker2.Helpers;
+using TimeTracker.Forms;
+using TimeTracker.Helpers;
 
-namespace TimeTracker2
+namespace TimeTracker
 {
     public partial class MainMenu : Form
     {

@@ -1,4 +1,4 @@
-namespace TimeTracker2.Enum
+namespace TimeTracker.Enum
 {
     public enum FolderEnum
     {

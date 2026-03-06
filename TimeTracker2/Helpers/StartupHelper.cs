@@ -1,11 +1,11 @@
 using Microsoft.Win32;
 
-namespace TimeTracker2.Helpers
+namespace TimeTracker.Helpers
 {
     internal static class StartupHelper
     {
         private const string RunKeyPath = @"Software\Microsoft\Windows\CurrentVersion\Run";
-        private const string ValueName = "TimeTracker2";
+        private const string ValueName = "TimeTracker";
 
         public static bool IsRunAtStartupEnabled()
         {

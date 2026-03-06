@@ -1,6 +1,6 @@
 using System.Drawing.Drawing2D;
 
-namespace TimeTracker2
+namespace TimeTracker
 {
     public partial class Login : Form
     {

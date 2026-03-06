@@ -1,4 +1,4 @@
-﻿namespace TimeTracker2.Forms
+namespace TimeTracker.Forms
 {
     partial class Add
     {

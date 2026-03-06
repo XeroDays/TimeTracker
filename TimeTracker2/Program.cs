@@ -1,12 +1,9 @@
-using TimeTracker2.Enum;
+using TimeTracker.Enum;
 
-namespace TimeTracker2
+namespace TimeTracker
 {
     internal static class Program
-    {
-        /// <summary>
-        ///  The main entry point for the application.
-        /// </summary>
+    { 
         [STAThread]
         static void Main()
         {
