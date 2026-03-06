@@ -1,0 +1,48 @@
+name: Create Release (Manual - Installer Only)
+
+on:
+  workflow_dispatch:
+
+env:
+  PROJECT_NAME: TimeTracker
+  PROJECT_PATH: ./TimeTracker2/TimeTracker.csproj
+  BUILD_PATH: ./TimeTracker2/bin/Release/net10.0-windows
+  ISS_FILE: ./SetupInstaller.iss
+  INSTALLER_PATH: ./Output/TimeTrackerSetup.exe
+
+jobs:
+  build-and-release:
+    name: Build and Release Installer
+    runs-on: windows-latest
+    permissions:
+      contents: write
+
+    steps:
+      - name: Checkout code
+        uses: actions/checkout@v4
+
+      - name: Setup .NET
+        uses: actions/setup-dotnet@v4
+        with:
+          dotnet-version: "10.0.x"
+
+      - name: Restore dependencies
+        run: dotnet restore ${{ env.PROJECT_PATH }}
+
+      - name: Build the project
+        run: dotnet build ${{ env.PROJECT_PATH }} -c Release --no-restore
+
+      - name: Install Inno Setup
+        run: choco install innosetup --yes
+
+      - name: Compile installer with Inno Setup
+        run: iscc ${{ env.ISS_FILE }}
+
+      - name: Create GitHub release with installer
+        uses: softprops/action-gh-release@v2
+        with:
+          tag_name: v1.0.${{ github.run_number }}
+          name: Release v1.0.${{ github.run_number }}
+          files: ${{ env.INSTALLER_PATH }}
+        env:
+          GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
