@@ -9,6 +9,8 @@ env:
   PROJECT_PATH: ./TimeTracker2/TimeTracker2.csproj
   BUILD_PATH: ./TimeTracker2/bin/Release/net10.0-windows
   ZIP_NAME: TimeTracker2.zip
+  ISS_FILE: ./SetupInstaller.iss
+  INSTALLER_PATH: ./Output/TimeTracker2Setup.exe
 
 jobs:
   build-and-release:
@@ -36,20 +38,17 @@ jobs:
         run: |
           Compress-Archive -Path "${{ env.BUILD_PATH }}\*" -DestinationPath "${{ env.BUILD_PATH }}\${{ env.ZIP_NAME }}"
 
-      - name: Upload build artifacts
-        uses: actions/upload-artifact@v4
-        with:
-          name: build
-          path: ${{ env.BUILD_PATH }}/${{ env.ZIP_NAME }}
+      - name: Install Inno Setup
+        run: choco install innosetup --yes
 
-      - name: Download build artifacts
-        uses: actions/download-artifact@v4
-        with:
-          name: build
+      - name: Compile installer with Inno Setup
+        run: iscc ${{ env.ISS_FILE }}
 
-      - name: Upload zip to GitHub Release
+      - name: Upload zip and installer to GitHub Release
         uses: softprops/action-gh-release@v2
         with:
-          files: ${{ env.ZIP_NAME }}
+          files: |
+            ${{ env.BUILD_PATH }}/${{ env.ZIP_NAME }}
+            ${{ env.INSTALLER_PATH }}
         env:
           GITHUB_TOKEN: ${{ secrets.GITHUB_TOKEN }}
