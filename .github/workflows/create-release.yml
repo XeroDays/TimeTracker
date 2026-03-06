@@ -14,6 +14,8 @@ jobs:
   build-and-release:
     name: Pipeline to Release
     runs-on: windows-latest
+    permissions:
+      contents: write   # Required to create/update releases and upload assets
 
     steps:
       - name: Checkout code
