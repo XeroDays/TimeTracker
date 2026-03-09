@@ -5,7 +5,7 @@ A modern, dark-themed Timesheet Tracker built with .NET 10.0 and Windows Forms. 
 ## Overview
 
 TimeTracker is a desktop application that helps you track time spent on different projects. Switch projects to start the timer, and the app records sessions automatically. Data is stored locally in your Documents folder. When you lock the PC or shut down, the current project is paused so time is not over-counted.
-<img width="660" height="451" alt="image" src="https://github.com/user-attachments/assets/0246fc96-e5cf-4f9e-ac12-912da2991beb" />
+<img width="660" height="451" alt="image" src="https://github.com/user-attachments/assets/423043a8-7e05-4d51-9325-7a620cb2a81e" />
 
 ## Key Features
 
