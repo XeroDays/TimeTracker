@@ -181,6 +181,11 @@ namespace TimeTracker.Helpers
                 .Where(t => t.ProjectName != PauseProjectName)
                 .ToList();
 
+            var datesWithRecords = allTrackingsFull
+                .Select(t => t.Timestamp.Date)
+                .Distinct()
+                .ToHashSet();
+
             foreach (var startEntry in trackingsExcludingPause)
             {
                 var nextTracking = allTrackingsFull
@@ -198,6 +203,12 @@ namespace TimeTracker.Helpers
 
                 while (currentDate <= lastDate)
                 {
+                    if (!datesWithRecords.Contains(currentDate))
+                    {
+                        currentDate = currentDate.AddDays(1);
+                        continue;
+                    }
+
                     var dayStart = currentDate;
                     var dayEnd = currentDate.AddDays(1).AddTicks(-1);
 
@@ -222,6 +233,28 @@ namespace TimeTracker.Helpers
             {
                 rounded[kv.Key] = Math.Round(kv.Value, 2);
             }
+
+            var allProjects = trackingsExcludingPause.Select(t => t.ProjectName).Distinct().ToList();
+            var rangeFirstDate = allTrackingsFull.Min(t => t.Timestamp.Date);
+            var rangeLastDate = allTrackingsFull.Max(t => t.Timestamp.Date);
+            var lastEntry = allTrackingsFull.LastOrDefault();
+            if (lastEntry != null && lastEntry.ProjectName != PauseProjectName &&
+                !allTrackingsFull.Any(t => t.Timestamp > lastEntry.Timestamp) && rangeLastDate < DateTime.Today)
+            {
+                rangeLastDate = DateTime.Today;
+            }
+            for (var d = rangeFirstDate; d <= rangeLastDate; d = d.AddDays(1))
+            {
+                foreach (var project in allProjects)
+                {
+                    var key = (project, d);
+                    if (!rounded.ContainsKey(key))
+                    {
+                        rounded[key] = 0;
+                    }
+                }
+            }
+
             return rounded;
         }
     }
