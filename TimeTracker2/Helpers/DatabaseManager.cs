@@ -198,8 +198,19 @@ namespace TimeTracker.Helpers
                 var end = sessionEnd;
                 var project = startEntry.ProjectName;
 
-                var currentDate = start.Date;
-                var lastDate = end.Date;
+                var startDate = start.Date;
+                var endDate = end.Date;
+
+                var daysSpan = (endDate - startDate).TotalDays;
+
+                if (daysSpan > 1)
+                {
+                    end = startDate.AddDays(1).AddTicks(-1);
+                    endDate = startDate;
+                }
+
+                var currentDate = startDate;
+                var lastDate = endDate;
 
                 while (currentDate <= lastDate)
                 {

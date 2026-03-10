@@ -98,6 +98,11 @@ for each startEntry in trackingsExclPause:
   nextTracking = first in allTrackingsFull with Timestamp > startEntry.Timestamp
   sessionEnd   = nextTracking.Timestamp or DateTime.Now
 
+  // Cap session at end of start day if gap > 1 day (prevents attributing time across weekends/app-off periods)
+  if (sessionEnd.Date - start.Date).TotalDays > 1:
+    sessionEnd = end of start.Date
+    only attribute to start.Date
+
   for currentDate from start.Date to sessionEnd.Date:
     if currentDate NOT in datesWithRecords:
       skip  // Do NOT attribute hours to days with no records
